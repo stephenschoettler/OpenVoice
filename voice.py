@@ -65,8 +65,10 @@ target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_conver
 
 # Timestamp for output file
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-
 save_path = f'{output_dir}/output_{timestamp}.wav'
+
+# Alternate save_path without timestamp
+# save_path = f'{output_dir}/output_en_default.wav'
 
 # Hardcoded text (add 'text' to basespeakertts.tts() to make work)
 # text = "Hi! This is a demo of the open-source voice conversion system."
@@ -84,9 +86,9 @@ tone_color_converter.convert(
     tgt_se=target_se, 
     output_path=save_path,
     message=encode_message)
-print("Tone color conversion completed.")
-print(f"Voice saved to: {save_path}")
+print("Tone COlor Conversion Complete.")
+print(f"Saved: {save_path}")
 print("Now playing...")
 
 # Play the converted audio
-playsound(save_path)
+# playsound(save_path)

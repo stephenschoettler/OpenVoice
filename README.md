@@ -1,6 +1,6 @@
 # OpenVoice
 
-Pretty simple if you want to test. Install OpenVoice and then drop my voice.py into your project directory.
+Pretty simple if you want to test. Install OpenVoice and then drop my voice.py into your project directory. Install argparse datetime and playsound.
 #   Text string
 python voice.py --text "Enter text string here."
 #   Text file

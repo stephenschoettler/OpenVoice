@@ -1,6 +1,7 @@
 import os
 import torch
 import argparse
+from playsound import playsound
 from datetime import datetime
 from openai import OpenAI
 import se_extractor  # Import the se_extractor module
@@ -58,17 +59,19 @@ os.makedirs(output_dir, exist_ok=True)
 # Obtain Tone Color Embedding for reference speaker
 source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
+#  Reference speaker Setup
 reference_speaker = 'resources/example_reference.mp3'
 target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
 
+# Timestamp for output file
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
 save_path = f'{output_dir}/output_{timestamp}.wav'
 
+# Hardcoded text (add 'text' to basespeakertts.tts() to make work)
+# text = "Hi! This is a demo of the open-source voice conversion system."
+
 # Run the base speaker tts
-
-# Hardcoded text (add text arg to basespeakertts.tts() to change)
-#text = "Hi! This is a demo of the open-source voice conversion system."
-
 src_path = f'{output_dir}/tmp.wav'
 base_speaker_tts.tts(input_text, src_path, speaker='default', language='English', speed=1.0)
 
@@ -80,3 +83,8 @@ tone_color_converter.convert(
     tgt_se=target_se, 
     output_path=save_path,
     message=encode_message)
+
+print(f"Completed voice saved to: {save_path} NOW PLAYING!")
+
+# Play the converted audio
+playsound(save_path)

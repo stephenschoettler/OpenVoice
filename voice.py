@@ -1,10 +1,10 @@
 import os
 import torch
 import argparse
-from playsound import playsound
+import se_extractor  # Import the se_extractor module
 from datetime import datetime
 from openai import OpenAI
-import se_extractor  # Import the se_extractor module
+from playsound import playsound
 from api import BaseSpeakerTTS, ToneColorConverter
 
 # Initialization for OpenVoice AI
@@ -76,6 +76,7 @@ src_path = f'{output_dir}/tmp.wav'
 base_speaker_tts.tts(input_text, src_path, speaker='default', language='English', speed=1.0)
 
 # Run the tone color converter
+print("Starting tone color conversion...")
 encode_message = "@MyShell"
 tone_color_converter.convert(
     audio_src_path=src_path, 
@@ -83,8 +84,9 @@ tone_color_converter.convert(
     tgt_se=target_se, 
     output_path=save_path,
     message=encode_message)
-
-print(f"Completed voice saved to: {save_path} NOW PLAYING!")
+print("Tone color conversion completed.")
+print(f"Voice saved to: {save_path}")
+print("Now playing...")
 
 # Play the converted audio
 playsound(save_path)

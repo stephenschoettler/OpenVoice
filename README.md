@@ -7,4 +7,5 @@ python voice.py --text "Enter text string here."
 python voice.py --text_file "path/to/file.txt"
 #   LMStudio Server
 (First, start local inference server.)
+
 python voice.py --lmstudio "Enter Prompt here."

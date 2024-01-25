@@ -1,53 +1,17 @@
 import os
 import torch
-import argparse
-import se_extractor  # Import the se_extractor module
-from datetime import datetime
-from openai import OpenAI
+import se_extractor
 from playsound import playsound
 from api import BaseSpeakerTTS, ToneColorConverter
 
-# Initialization for OpenVoice AI
+# Define paths and settings
 ckpt_base = 'checkpoints/base_speakers/EN'
 ckpt_converter = 'checkpoints/converter'
-device="cuda:0" if torch.cuda.is_available() else "cpu"
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
 output_dir = 'outputs'
+response_file_path = 'ai_response.txt'  # Path to the AI-generated response
 
-# Argument parser setup
-parser = argparse.ArgumentParser(description='TTS with optional LMStudio integration.')
-parser.add_argument('--text', type=str, help='Text to convert to speech.', default=None)
-parser.add_argument('--text_file', type=str, help='File path of text to convert to speech.', default=None)
-parser.add_argument('--lmstudio', type=str, help='Prompt for LMStudio.', default=None)
-
-# Parse arguments
-args = parser.parse_args()
-
-# Decide source of text
-if args.lmstudio:
-    # LMStudio setup and text generation based on the prompt
-    client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
-    completion = client.chat.completions.create(
-        model="local-model",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": args.lmstudio}
-        ],
-        temperature=0.7,
-    )
-    input_text = completion.choices[0].message.content
-elif args.text:
-    input_text = args.text
-elif args.text_file:
-    with open(args.text_file, 'r') as file:
-        input_text = file.read()
-else:
-    raise ValueError("No input text provided. Use --text, --text_file, or --lmstudio.")
-
-# Ensure input_text is a string
-if not isinstance(input_text, str):
-    input_text = str(input_text)
-
-# OpenVoice AI setup
+# Initialize TTS and tone color converter
 base_speaker_tts = BaseSpeakerTTS(f'{ckpt_base}/config.json', device=device)
 base_speaker_tts.load_ckpt(f'{ckpt_base}/checkpoint.pth')
 
@@ -55,30 +19,28 @@ tone_color_converter = ToneColorConverter(f'{ckpt_converter}/config.json', devic
 tone_color_converter.load_ckpt(f'{ckpt_converter}/checkpoint.pth')
 
 os.makedirs(output_dir, exist_ok=True)
-
-# Obtain Tone Color Embedding for reference speaker
 source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
-#  Reference speaker Setup
+# Extract the target speaker embedding
 reference_speaker = 'resources/example_reference.mp3'
 target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
 
-# Timestamp for output file
-timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-save_path = f'{output_dir}/output_{timestamp}.wav'
+# Prepare the output path
+save_path = f'{output_dir}/output_en_default.wav'
 
-# Alternate save_path without timestamp
-# save_path = f'{output_dir}/output_en_default.wav'
+# Load and use the AI-generated response
+if os.path.exists(response_file_path):
+    with open(response_file_path, 'r') as file:
+        text = file.read().strip()
+else:
+    print(f"Error: Response file '{response_file_path}' not found.")
+    exit(1)
 
-# Hardcoded text (add 'text' to basespeakertts.tts() to make work)
-# text = "Hi! This is a demo of the open-source voice conversion system."
-
-# Run the base speaker tts
+# Run the base speaker TTS
 src_path = f'{output_dir}/tmp.wav'
-base_speaker_tts.tts(input_text, src_path, speaker='default', language='English', speed=1.0)
+base_speaker_tts.tts(text, src_path, speaker='default', language='English', speed=1.0)
 
 # Run the tone color converter
-print("Starting tone color conversion...")
 encode_message = "@MyShell"
 tone_color_converter.convert(
     audio_src_path=src_path, 
@@ -86,9 +48,8 @@ tone_color_converter.convert(
     tgt_se=target_se, 
     output_path=save_path,
     message=encode_message)
-print("Tone COlor Conversion Complete.")
-print(f"Saved: {save_path}")
-print("Now playing...")
+
+print(f"Audio generated successfully: {save_path}")
 
 # Play the converted audio
-# playsound(save_path)
+playsound(save_path)

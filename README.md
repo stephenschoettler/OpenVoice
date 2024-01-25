@@ -1,11 +1,7 @@
 # OpenVoice
 
-Pretty simple if you want to test. Install OpenVoice and then drop my voice.py into your project directory. Install argparse datetime and playsound.
-#   Text string
-python voice.py --text "Enter text here."
-#   Text file
-python voice.py --text_file "path/to/file.txt"
-#   LMStudio Server
-(First, start local inference server.)
+Everything has changed. I split the assistant into 3 scripts, Ears for whisper, Brain for LMStudio, Voice for OpenVoice.
 
-python voice.py --lmstudio "Enter Prompt here."
+Reminder: create new requirements.txt
+Going to sleep now...
+

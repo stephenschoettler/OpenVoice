@@ -7,6 +7,11 @@ def generate_response_with_local_ai(input_text):
     Generates a response using a local AI setup (LM Studio) through the OpenAI library.
     Adjust the base_url and other parameters as needed for your local setup.
     """
+
+    # Load the system message from bot.txt
+    with open('bot.txt', 'r') as file:
+        system_message = file.read().strip()
+
     # Initialize the OpenAI client with the local server's URL
     client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
     
@@ -14,7 +19,7 @@ def generate_response_with_local_ai(input_text):
     completion = client.chat.completions.create(
         model="local-model",  # This field is currently unused but required
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": system_message},
             {"role": "user", "content": input_text}
         ],
         temperature=0.7,

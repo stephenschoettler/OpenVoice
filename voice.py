@@ -52,4 +52,4 @@ tone_color_converter.convert(
 print(f"Audio generated successfully: {save_path}")
 
 # Play the converted audio
-# playsound(save_path)
+playsound(save_path)

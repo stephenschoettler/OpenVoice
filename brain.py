@@ -9,7 +9,7 @@ def generate_response_with_local_ai(input_text):
     """
 
     # Load the system message from bot.txt
-    with open('bot.txt', 'r') as file:
+    with open('system_message.txt', 'r') as file:
         system_message = file.read().strip()
 
     # Initialize the OpenAI client with the local server's URL

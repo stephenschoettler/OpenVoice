@@ -45,7 +45,7 @@ wf.close()
 
 # Now, transcribe the recording with Whisper
 print("Transcribing...")
-model = whisper.load_model("base")
+model = whisper.load_model("tiny.en")
 result = model.transcribe(WAVE_OUTPUT_FILENAME)
 transcription = result["text"]
 print("Transcription:", transcription)

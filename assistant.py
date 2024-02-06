@@ -1,22 +1,31 @@
-# Import the necessary modules
-import ears  # Make sure ears.py is in the same directory
-import brain  # Similarly, ensure brain.py is correctly placed and accessible
-import voice  # Ensure voice.py is also correctly placed and accessible
+import ears
+import brain
+import voice
 
 def main_loop():
+    context = ""  # Initialize conversation context
+
     while True:
-        print("Recording... Press the SPACEBAR to stop.")
-        transcription = ears.record_and_transcribe()  # Call the function from ears.py
+        print("Listening for a prompt...")
+        transcription = ears.record_and_transcribe()
         
         if "exit" in transcription.lower():
             print("Exit command received. Shutting down...")
             break
         
-        print(f"Transcription: {transcription}")
-        response = brain.generate_response_with_local_ai(transcription)  # Call the function from brain.py
+        # Update the context with the new user input
+        context += f"\nUser: {transcription}"
+
+        # Generate response using the updated context
+        response = brain.generate_response_with_local_ai(transcription, context)
+
+        # Update the context with the AI response
+        context += f"\nAI: {response}"
+
         print(f"AI Response: {response}")
         
-        voice.vocalize_response(response)  # Call the function from voice.py
+        # Vocalize the AI response
+        voice.vocalize_response(response)
 
 if __name__ == "__main__":
     try:

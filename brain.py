@@ -17,7 +17,7 @@ def generate_response_with_local_ai(input_text):
     
     # Create a completion request with the input text
     completion = client.chat.completions.create(
-        model="local-model",  # This field is currently unused but required
+        model="local-model",  
         messages=[
             {"role": "system", "content": system_message},
             {"role": "user", "content": input_text}

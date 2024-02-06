@@ -1,7 +1,7 @@
 # Open_Assistant
 
 ## Overview
-Open_Assistant is an innovative voice assistant that leverages the power of open-source projects to provide an array of functionalities, from answering queries to managing smart devices, all through voice commands. It is designed to enhance user interaction with technology by offering a customizable and modular voice-controlled interface. The assistant is split into three main scripts for modularity and ease of development:
+Open_Assistant is an innovative voice assistant that leverages the power of open-source projects to provide an array of functionalities, from answering queries to managing smart devices (future feature), all through voice commands. It is designed to enhance user interaction with technology by offering a customizable and modular voice-controlled interface. The assistant is split into three main scripts for modularity and ease of development:
 - **Ears**: Utilizes Whisper from OpenAI for voice recognition.
 - **Brain**: Leverages LM Studio for processing natural language and generating responses.
 - **Voice**: Uses OpenVoice for generating spoken responses.
